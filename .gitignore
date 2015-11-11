@@ -1,3 +1,4 @@
 #Ignoramos todos los datos
 *.txt
 *.json
+.DS_Store
