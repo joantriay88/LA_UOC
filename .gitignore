@@ -1,0 +1,3 @@
+#Ignoramos todos los datos
+*.txt
+*.json
