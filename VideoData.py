@@ -244,7 +244,39 @@ class VideoData:
 
 		return dict_video_change_speed_up_average, dict_video_change_speed_down_average
 
+	def calculate_number_plays_stops_pauses(self, json_file, li_ids_video):
+		dict_video_times_plays={}
+		dict_video_times_stops={}
+		dict_video_times_pauses={}
 
+		for video in li_ids_video:
+			dict_video_times_plays[str(video)]=0
+			dict_video_times_stops[str(video)]=0
+			dict_video_times_pauses[str(video)]=0
+
+		for line in json_file:
+			if line['event_type']=="play_video":
+				event= line['event']
+				elements_events=json.loads(event)						
+				code_video=str(elements_events['id'])
+				dict_video_times_plays[code_video]=dict_video_times_plays[code_video]+1
+
+			if line['event_type']=="stop_video":
+				event= line['event']
+				elements_events=json.loads(event)						
+				code_video=str(elements_events['id'])
+				dict_video_times_stops[code_video]=dict_video_times_stops[code_video]+1
+
+			if line['event_type']=="pause_video":
+				event= line['event']
+				elements_events=json.loads(event)						
+				code_video=str(elements_events['id'])
+				dict_video_times_pauses[code_video]=dict_video_times_pauses[code_video]+1
+
+		return dict_video_times_plays, dict_video_times_stops, dict_video_times_pauses
+
+
+    #TEST METHOD REMOVE AT FINAL
 	def calculate_number_video_events(self,li_names_stud):
 		fileNew=open("counted_events.txt", "a")
 
@@ -271,3 +303,5 @@ class VideoData:
 		fileNew.close()
 
 		return	
+
+
