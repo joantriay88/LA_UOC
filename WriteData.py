@@ -67,8 +67,8 @@ class WriteData:
 
 		return
 
-	def writeNameStudents(self, names):
-		fileToWrite = open('files/NameStudents.txt', 'a')
+	def writeName(self, name_file, names):
+		fileToWrite = open('files/'+name_file, 'a')
 		for name in names:
 			fileToWrite.write(str(name)+"\n")
 		fileToWrite.close()
