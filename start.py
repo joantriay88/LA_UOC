@@ -17,13 +17,12 @@ readedData = ReadData()
 
 
 #************UPLOAD JSON FILE****************************#
-
 jsonfile=open("/Users/LearningAnalytics/Dropbox/tot_arr.json")
 print "LOADING .JSON FILE..."
 json_file=json.load(jsonfile)
 print ".JSON FILE LOADED"
 
-
+'''
 #************SYSTEM VARIABLES****************************#
 li_names_stud=students.calculateNameStudents(json_file)
 fileData.writeName("NameStudents.txt", li_names_stud)
@@ -32,8 +31,10 @@ print "NAME STUDENTS CALCULATED"
 li_ids_video = videos.calculate_video_ids(json_file)
 fileData.writeName("CodeVideos.txt", li_ids_video)
 print "IDS VIDEOS CALCULATED"
+'''
+videos.calculate_duration_videos(json_file)
 
-
+'''
 
 #*******************************************SYSTEM****************************************************# 
 dict_video_times_plays, dict_video_times_stops, dict_video_times_pauses = videos.calculate_number_plays_stops_pauses(json_file,li_ids_video)
@@ -95,6 +96,7 @@ fileData.writeGradesDataMax(dict_grades_students_modules, modules, li_names_stud
 print "GRADES ATTEMPT FOR MODULE AND MAX GRADE FOR MODULE CALCULATED"
 
 
+'''
 
 '''
 #******************************************TESTING TRACKING LOGS**********************************#
