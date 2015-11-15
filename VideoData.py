@@ -3,6 +3,9 @@ import sys
 import json
 import datetime
 import copy
+import pafy
+import urllib
+import isodate
 
 
 class VideoData:
@@ -274,6 +277,31 @@ class VideoData:
 				dict_video_times_pauses[code_video]=dict_video_times_pauses[code_video]+1
 
 		return dict_video_times_plays, dict_video_times_stops, dict_video_times_pauses
+
+	def calculate_duration_videos(self,json_file):
+		li_ids_video=[]
+		for line in json_file:
+			if line['event_type']== "stop_video" or line['event_type']=="play_video" or line['event_type']== "pause_video":
+				event= line['event']
+				elements_events=json.loads(event)
+				code_video=elements_events['code']
+				code_video_ucatx=elements_events['id']
+				if code_video not in li_ids_video:
+					li_ids_video.append(code_video)
+		
+		
+		for video in li_ids_video:
+			video_id=str(video)
+			if video_id!="Dd1iE-NtBho":
+				api_key="AIzaSyB1I6cpK4UTwWmkqqiidXncss9Fvmb_CiQ"
+				searchUrl="https://www.googleapis.com/youtube/v3/videos?id="+video_id+"&key="+api_key+"&part=contentDetails"
+				response = urllib.urlopen(searchUrl).read()
+				data = json.loads(response)
+				all_data=data['items']
+				contentDetails=all_data[0]['contentDetails']
+				dur=isodate.parse_duration(contentDetails['duration'])
+				print dur.total_seconds()
+		return
 
 
     #TEST METHOD REMOVE AT FINAL
