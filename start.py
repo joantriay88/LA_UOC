@@ -22,7 +22,6 @@ print "LOADING .JSON FILE..."
 json_file=json.load(jsonfile)
 print ".JSON FILE LOADED"
 
-'''
 #************SYSTEM VARIABLES****************************#
 li_names_stud=students.calculateNameStudents(json_file)
 fileData.writeName("NameStudents.txt", li_names_stud)
@@ -31,8 +30,11 @@ print "NAME STUDENTS CALCULATED"
 li_ids_video = videos.calculate_video_ids(json_file)
 fileData.writeName("CodeVideos.txt", li_ids_video)
 print "IDS VIDEOS CALCULATED"
-'''
-videos.calculate_duration_videos(json_file)
+
+
+#videos.calculate_duration_videos(json_file)
+videos.calculate_time_video_watched_student(json_file, li_names_stud, li_ids_video)
+
 
 '''
 
