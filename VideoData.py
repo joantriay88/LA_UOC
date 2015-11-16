@@ -300,9 +300,61 @@ class VideoData:
 				all_data=data['items']
 				contentDetails=all_data[0]['contentDetails']
 				dur=isodate.parse_duration(contentDetails['duration'])
-				print dur.total_seconds()
+				print video_id+" "+str(dur.total_seconds())
+		return
+	
+	def calculate_time_video_watched_student(self, json_file, li_names_stud, li_ids_video):
+		dict_video_list={}
+		dict_video_list_students={}
+		
+		for video in li_ids_video:
+			dict_video_list[str(video)]=0
+
+		for student in li_names_stud:
+			dict_video_list_students[str(student)]=dict_video_list.copy()
+
+		for student in li_names_stud:
+			for video in li_ids_video:
+				dict_video_list_students[str(student)][str(video)]=[]
+
+		for line in json_file:
+
+			if line['event_type']=="pause_video":
+				student = str(line["username"])
+				if student in li_names_stud:
+					event= line['event']
+					elements_events=json.loads(event)
+					code_video=str(elements_events['id'])
+					time = str(elements_events['currentTime'])
+					li_play=["pause",time]
+					dict_video_list_students[student][code_video].append(li_play)
+
+			if line['event_type']=="stop_video":
+				student = str(line["username"])
+				if student in li_names_stud:
+					event= line['event']
+					elements_events=json.loads(event)
+					code_video=str(elements_events['id'])
+					time = str(elements_events['currentTime'])
+					li_play=["stop",time]
+					dict_video_list_students[student][code_video].append(li_play)
+
+			if line['event_type']=="play_video":
+				student = str(line["username"])
+				if student in li_names_stud:
+					event= line['event']
+					elements_events=json.loads(event)
+					code_video=str(elements_events['id'])
+					time = str(elements_events['currentTime'])
+					li_play=["play",time]
+					dict_video_list_students[student][code_video].append(li_play)
+	
+
+		print dict_video_list_students["juliacarrion"]["i4x-UPF-C01-video-24c2323fb5ec4945a5b1d5cbd837a23b"]
+		print len(dict_video_list_students["juliacarrion"]["i4x-UPF-C01-video-24c2323fb5ec4945a5b1d5cbd837a23b"])
 		return
 
+	
 
     #TEST METHOD REMOVE AT FINAL
 	def calculate_number_video_events(self,li_names_stud):
