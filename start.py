@@ -32,9 +32,6 @@ fileData.writeName("CodeVideos.txt", li_ids_video)
 print "IDS VIDEOS CALCULATED"
 
 
-#videos.calculate_duration_videos(json_file)
-videos.calculate_time_video_watched_student(json_file, li_names_stud, li_ids_video)
-
 
 '''
 
@@ -96,9 +93,17 @@ dict_grades_students_modules, modules = grades.calculate_grades(json_file, li_na
 fileData.writeGradesData(dict_grades_students_modules, modules, li_names_stud, 3)
 fileData.writeGradesDataMax(dict_grades_students_modules, modules, li_names_stud)
 print "GRADES ATTEMPT FOR MODULE AND MAX GRADE FOR MODULE CALCULATED"
-
-
 '''
+
+dict_total_times_video=videos.calculate_duration_videos(json_file)
+print "ALL TIMES FOR EVERY VIDEO CALCULATED WITH YOUTUBE API V3"
+
+dict_video_time_viwed_student=videos.calculate_time_video_watched_student(json_file, li_names_stud, li_ids_video)
+print "TIME WATCHED FOR EVERY VIDEO AND STUDENT CALCULATED"
+
+dict_quotas_video=videos.calculate_quota_video_viwed(li_names_stud, li_ids_video, dict_total_times_video, dict_video_time_viwed_student)
+print dict_quotas_video["juliacarrion"]
+print "QUOTA TIME VIEWED VIDEO CALCULATED"
 
 '''
 #******************************************TESTING TRACKING LOGS**********************************#
