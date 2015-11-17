@@ -102,8 +102,11 @@ dict_video_time_viwed_student=videos.calculate_time_video_watched_student(json_f
 print "TIME WATCHED FOR EVERY VIDEO AND STUDENT CALCULATED"
 
 dict_quotas_video=videos.calculate_quota_video_viwed(li_names_stud, li_ids_video, dict_total_times_video, dict_video_time_viwed_student)
-print dict_quotas_video["juliacarrion"]
 print "QUOTA TIME VIEWED VIDEO CALCULATED"
+
+dict_video_list_accumulated_time, dict_video_list_average_time=videos.calculate_accumulated_and_average_time_viewed_video(li_names_stud, li_ids_video, dict_video_time_viwed_student)
+print "ACCUMULATED AND AVERAGE TIME VIEWED VIDEO CALCULATED "
+print dict_video_list_accumulated_time
 
 '''
 #******************************************TESTING TRACKING LOGS**********************************#
@@ -113,8 +116,7 @@ videos.calculate_number_video_events(li_names_stud)
 print "NUMBER EVENTS CALCULATED (TEST)"
 '''
 
-
-
 #fileData.join_video_data()
+#print "VIDEO DATA JOINED"
 #fileData.join_all_stud_data()
-
+#print "STUDENT DATA JOINED"
