@@ -405,6 +405,28 @@ class VideoData:
 		
 		return dict_quotas_video
 
+	def calculate_accumulated_and_average_time_viewed_video(self, li_names_stud, li_ids_video, dict_video_time_viwed_student):
+		dict_video_list_accumulated_time={}
+		dict_video_list_average_time={}
+
+		
+		for video in li_ids_video:
+			dict_video_list_accumulated_time[str(video)]=0
+			dict_video_list_average_time[str(video)]=0
+		
+		
+		for video in li_ids_video:
+			for student in li_names_stud:
+				dict_video_list_accumulated_time[str(video)]=dict_video_list_accumulated_time[str(video)]+dict_video_time_viwed_student[str(student)][str(video)]
+				dict_video_list_average_time[str(video)]=dict_video_list_average_time[str(video)]+dict_video_time_viwed_student[str(student)][str(video)]
+
+		for video in li_ids_video:
+			dict_video_list_average_time[str(video)]=dict_video_list_average_time[str(video)]/len(li_names_stud)
+		
+		return dict_video_list_accumulated_time, dict_video_list_average_time
+
+
+
     #TEST METHOD REMOVE AT FINAL
 	def calculate_number_video_events(self,li_names_stud):
 		fileNew=open("counted_events.txt", "a")
