@@ -31,35 +31,35 @@ li_ids_video = videos.calculate_video_ids(json_file)
 fileData.writeName("CodeVideos.txt", li_ids_video)
 print "IDS VIDEOS CALCULATED"
 
+print len(li_ids_video)
 
-
-'''
 
 #*******************************************SYSTEM****************************************************# 
 dict_video_times_plays, dict_video_times_stops, dict_video_times_pauses = videos.calculate_number_plays_stops_pauses(json_file,li_ids_video)
-fileData.writeInFileSampleData(dict_video_times_plays, "times_play_for_video.txt", li_ids_video)
-fileData.writeInFileSampleData(dict_video_times_stops, "times_stop_for_video.txt", li_ids_video)
-fileData.writeInFileSampleData(dict_video_times_pauses, "times_pauses_for_video.txt", li_ids_video)
+fileData.writeInFileSampleData(dict_video_times_plays, "times_play_video.txt", li_ids_video)
+fileData.writeInFileSampleData(dict_video_times_stops, "times_stop_video.txt", li_ids_video)
+fileData.writeInFileSampleData(dict_video_times_pauses, "times_pauses_video.txt", li_ids_video)
 print "STOP, PAUSE AND PLAY TIME FOR VIDEO CALCULATED "
 
 
 dict_video_seek_for_time_accumulated, dict_video_seek_back_time_accumulated=videos.calculate_accumulated_time_kind_seeks(json_file, li_ids_video)
-fileData.writeInFileSampleData(dict_video_seek_back_time_accumulated, "replayed_time_accumulated_videos.txt",li_ids_video)
-fileData.writeInFileSampleData(dict_video_seek_for_time_accumulated, "skipped_time_accumulated_videos.txt",li_ids_video)
+fileData.writeInFileSampleData(dict_video_seek_back_time_accumulated, "replayed_time_accumulated_video.txt",li_ids_video)
+fileData.writeInFileSampleData(dict_video_seek_for_time_accumulated, "skipped_time_accumulated_video.txt",li_ids_video)
 print "ACCUMULATED TIMES SEEK BACKWARD AND FORWARD CALCULATED"
 
 
 dict_video_seek_for_time, dict_video_seek_back_time, dict_video_seek_back_num, dict_video_seek_for_num=videos.calculate_average_time_kind_seeks(json_file, li_ids_video)
-fileData.writeInFileSampleData(dict_video_seek_back_time, "replayed_time_average_videos.txt",li_ids_video)
-fileData.writeInFileSampleData(dict_video_seek_for_time, "skipped_time_average_videos.txt",li_ids_video)
-fileData.writeInFileSampleData(dict_video_seek_back_num, "times_seek_back_videos.txt",li_ids_video)
-fileData.writeInFileSampleData(dict_video_seek_for_num, "times_seek_for_videos.txt",li_ids_video)
+fileData.writeInFileSampleData(dict_video_seek_back_time, "replayed_time_average_video.txt",li_ids_video)
+fileData.writeInFileSampleData(dict_video_seek_for_time, "skipped_time_average_video.txt",li_ids_video)
+fileData.writeInFileSampleData(dict_video_seek_back_num, "times_seek_back_video.txt",li_ids_video)
+fileData.writeInFileSampleData(dict_video_seek_for_num, "times_seek_for_video.txt",li_ids_video)
 print "AVERAGE TIMES SEEK BACKWARD AND FORWARD CALCULATED"
 
 
-dict_videos_students_lasts_stops = videos.calculate_duration_play(json_file, li_names_stud, li_ids_video)
-fileData.writeInFile(dict_videos_students_lasts_stops,"time_viewed_videos_stud.txt", li_names_stud,li_ids_video)
-print "LAST STOP PLAY CALCULATED"
+#REMOVE THIS METHOD
+#dict_videos_students_lasts_stops = videos.calculate_duration_play(json_file, li_names_stud, li_ids_video)
+#fileData.writeInFile(dict_videos_students_lasts_stops,"time_viewed_videos_stud.txt", li_names_stud,li_ids_video)
+#print "LAST STOP PLAY CALCULATED"
 
 
 dic_times_event_students = videos.calculate_times_event(json_file, "play_video", li_names_stud, li_ids_video)
@@ -84,8 +84,8 @@ print "NUMBER AND KIND SEEKS CALCULATED"
 
 
 dict_video_change_speed_up_average, dict_video_change_speed_down_average=videos.calculate_change_speed(json_file, li_ids_video)
-fileData.writeInFileSampleData(dict_video_change_speed_up_average,"speedUp_average_videos.txt", li_ids_video)
-fileData.writeInFileSampleData(dict_video_change_speed_down_average,"speedDown_average_videos.txt", li_ids_video)
+fileData.writeInFileSampleData(dict_video_change_speed_up_average,"speedUp_average_video.txt", li_ids_video)
+fileData.writeInFileSampleData(dict_video_change_speed_down_average,"speedDown_average_video.txt", li_ids_video)
 print "AVERAGE SPEED UP AND DOWN CALCULATED"
 
 
@@ -93,20 +93,25 @@ dict_grades_students_modules, modules = grades.calculate_grades(json_file, li_na
 fileData.writeGradesData(dict_grades_students_modules, modules, li_names_stud, 3)
 fileData.writeGradesDataMax(dict_grades_students_modules, modules, li_names_stud)
 print "GRADES ATTEMPT FOR MODULE AND MAX GRADE FOR MODULE CALCULATED"
-'''
 
 dict_total_times_video=videos.calculate_duration_videos(json_file)
+#fileData.writeInFileSampleData(dict_total_times_video, "duration_yt_video.txt", li_ids_video)
 print "ALL TIMES FOR EVERY VIDEO CALCULATED WITH YOUTUBE API V3"
 
+
 dict_video_time_viwed_student=videos.calculate_time_video_watched_student(json_file, li_names_stud, li_ids_video)
+fileData.writeInFile(dict_video_time_viwed_student,"time_viewed_video_stud.txt", li_names_stud,li_ids_video)
 print "TIME WATCHED FOR EVERY VIDEO AND STUDENT CALCULATED"
 
 dict_quotas_video=videos.calculate_quota_video_viwed(li_names_stud, li_ids_video, dict_total_times_video, dict_video_time_viwed_student)
+fileData.writeInFile(dict_quotas_video,"quotas_viewed_video_stud.txt", li_names_stud,li_ids_video)
 print "QUOTA TIME VIEWED VIDEO CALCULATED"
 
+
 dict_video_list_accumulated_time, dict_video_list_average_time=videos.calculate_accumulated_and_average_time_viewed_video(li_names_stud, li_ids_video, dict_video_time_viwed_student)
+fileData.writeInFileSampleData(dict_video_list_accumulated_time, "accumulated_viewed_time_video.txt", li_ids_video)
+fileData.writeInFileSampleData(dict_video_list_average_time, "average_viewed_time_video.txt", li_ids_video)
 print "ACCUMULATED AND AVERAGE TIME VIEWED VIDEO CALCULATED "
-print dict_video_list_accumulated_time
 
 '''
 #******************************************TESTING TRACKING LOGS**********************************#
@@ -114,9 +119,11 @@ readedData.read_modify_pre_jsons(li_names_stud)
 print "JSON FOR EACH STUDENT GENERATED (DATA TEST)"
 videos.calculate_number_video_events(li_names_stud)
 print "NUMBER EVENTS CALCULATED (TEST)"
-'''
 
+
+#*****************************************JOINING FILES******************************************#
 #fileData.join_video_data()
 #print "VIDEO DATA JOINED"
 #fileData.join_all_stud_data()
 #print "STUDENT DATA JOINED"
+'''
