@@ -279,18 +279,23 @@ class VideoData:
 		return dict_video_times_plays, dict_video_times_stops, dict_video_times_pauses
 
 	def calculate_duration_videos(self,json_file):
-		li_ids_video=[]
+		li_ids_video_yt=[]
+		li_ids_video_ucatx=[]
+		dict_total_times_video={}
 		for line in json_file:
 			if line['event_type']== "stop_video" or line['event_type']=="play_video" or line['event_type']== "pause_video":
 				event= line['event']
 				elements_events=json.loads(event)
 				code_video=elements_events['code']
 				code_video_ucatx=elements_events['id']
-				if code_video not in li_ids_video:
-					li_ids_video.append(code_video)
+				if code_video not in li_ids_video_yt:
+					li_ids_video_yt.append(code_video)
+					li_ids_video_ucatx.append(code_video_ucatx)
+
+		for video in li_ids_video_ucatx:
+			dict_total_times_video[str(video)]=0
 		
-		
-		for video in li_ids_video:
+		for video in li_ids_video_yt:
 			video_id=str(video)
 			if video_id!="Dd1iE-NtBho":
 				api_key="AIzaSyB1I6cpK4UTwWmkqqiidXncss9Fvmb_CiQ"
@@ -300,22 +305,28 @@ class VideoData:
 				all_data=data['items']
 				contentDetails=all_data[0]['contentDetails']
 				dur=isodate.parse_duration(contentDetails['duration'])
-				print video_id+" "+str(dur.total_seconds())
-		return
+				index=li_ids_video_yt.index(str(video))
+				dict_total_times_video[str(li_ids_video_ucatx[index])]=dur.total_seconds()
+
+		return dict_total_times_video
+
 	
 	def calculate_time_video_watched_student(self, json_file, li_names_stud, li_ids_video):
 		dict_video_list={}
 		dict_video_list_students={}
+		dict_video_time_viwed_student={}
 		
 		for video in li_ids_video:
 			dict_video_list[str(video)]=0
 
 		for student in li_names_stud:
 			dict_video_list_students[str(student)]=dict_video_list.copy()
+			dict_video_time_viwed_student[str(student)]=dict_video_list.copy()
 
 		for student in li_names_stud:
 			for video in li_ids_video:
 				dict_video_list_students[str(student)][str(video)]=[]
+				dict_video_time_viwed_student[str(student)][str(video)]=0
 
 		for line in json_file:
 
@@ -326,8 +337,9 @@ class VideoData:
 					elements_events=json.loads(event)
 					code_video=str(elements_events['id'])
 					time = str(elements_events['currentTime'])
-					li_play=["pause",time]
-					dict_video_list_students[student][code_video].append(li_play)
+					if time != "None":
+						li_pause=["pause",time]
+						dict_video_list_students[student][code_video].append(li_pause)
 
 			if line['event_type']=="stop_video":
 				student = str(line["username"])
@@ -336,8 +348,9 @@ class VideoData:
 					elements_events=json.loads(event)
 					code_video=str(elements_events['id'])
 					time = str(elements_events['currentTime'])
-					li_play=["stop",time]
-					dict_video_list_students[student][code_video].append(li_play)
+					if time != "None":
+						li_stop=["stop",time]
+						dict_video_list_students[student][code_video].append(li_stop)
 
 			if line['event_type']=="play_video":
 				student = str(line["username"])
@@ -346,15 +359,51 @@ class VideoData:
 					elements_events=json.loads(event)
 					code_video=str(elements_events['id'])
 					time = str(elements_events['currentTime'])
-					li_play=["play",time]
-					dict_video_list_students[student][code_video].append(li_play)
+					if time != "None":
+						li_play=["play",time]
+						dict_video_list_students[student][code_video].append(li_play)
 	
-
-		print dict_video_list_students["juliacarrion"]["i4x-UPF-C01-video-24c2323fb5ec4945a5b1d5cbd837a23b"]
-		print len(dict_video_list_students["juliacarrion"]["i4x-UPF-C01-video-24c2323fb5ec4945a5b1d5cbd837a23b"])
-		return
-
 	
+		for student in li_names_stud:
+			for video in li_ids_video:
+				#I filtered for >1 because we need minimum 2 events 1:play 2:pause/stop
+				total_time=0
+				if len(dict_video_list_students[str(student)][str(video)]) > 1:
+					i=0
+					for line in dict_video_list_students[str(student)][str(video)]:
+						if i < len(dict_video_list_students[str(student)][str(video)])-1:
+							if dict_video_list_students[str(student)][str(video)][i][0]=="play" and (dict_video_list_students[str(student)][str(video)][i+1][0]=="stop" or dict_video_list_students[str(student)][str(video)][i+1][0]=="pause"):
+								play_time=float(dict_video_list_students[str(student)][str(video)][i][1])
+								stop_time=float(dict_video_list_students[str(student)][str(video)][i+1][1])
+								total_time=total_time+(stop_time-play_time)
+			
+						i=i+1
+
+				dict_video_time_viwed_student[str(student)][str(video)]=total_time
+
+		return dict_video_time_viwed_student
+
+	#I calculated the quota using the time_viwed_student/time_video, 1=video watched one time, 1.5=video watched one time and 0.5 times
+	#2= video watched 2 times...
+	def calculate_quota_video_viwed(self, li_names_stud, li_ids_video, dict_total_times_video, dict_video_time_viwed_student):
+		dict_quotas_video={}
+		dict_video_list={}
+		
+		for video in li_ids_video:
+			dict_video_list[str(video)]=0
+
+		for student in li_names_stud:
+			dict_quotas_video[str(student)]=dict_video_list.copy()
+		
+		
+		for student in li_names_stud:
+			for video in li_ids_video:
+				viewed=dict_video_time_viwed_student[str(student)][str(video)]
+				all_time=dict_total_times_video[str(video)]
+				quota= viewed/all_time
+				dict_quotas_video[str(student)][str(video)]=quota
+		
+		return dict_quotas_video
 
     #TEST METHOD REMOVE AT FINAL
 	def calculate_number_video_events(self,li_names_stud):
