@@ -87,45 +87,72 @@ class WriteData:
 
 
 	def join_video_data(self):
-		f=open("files/replayed_time_accumulated_videos.txt", "r")
+		f=open("files/replayed_time_accumulated_video.txt", "r")
 		replayed_accumulated= f.readlines()
 		f.close()
 
-		f=open("files/replayed_time_average_videos.txt", "r")
+		f=open("files/replayed_time_average_video.txt", "r")
 		replayed_average= f.readlines()
 		f.close()
 
-		f=open("files/skipped_time_accumulated_videos.txt", "r")
+		f=open("files/skipped_time_accumulated_video.txt", "r")
 		skipped_accumulated= f.readlines()
 		f.close()
 
-		f=open("files/skipped_time_average_videos.txt", "r")
+		f=open("files/skipped_time_average_video.txt", "r")
 		skipped_average= f.readlines()
 		f.close()
 
-		f=open("files/speedUp_average_videos.txt", "r")
+		f=open("files/speedUp_average_video.txt", "r")
 		speedUp= f.readlines()
 		f.close()
 
-		f=open("files/speedDown_average_videos.txt", "r")
+		f=open("files/speedDown_average_video.txt", "r")
 		speedDown= f.readlines()
 		f.close()
 
-		f=open("files/times_seek_back_videos.txt", "r")
+		f=open("files/times_seek_back_video.txt", "r")
 		seek_back= f.readlines()
 		f.close()
 
-		f=open("files/times_seek_for_videos.txt", "r")
+		f=open("files/times_seek_for_video.txt", "r")
 		seek_for= f.readlines()
 		f.close()
 
+		f=open("files/times_play_video.txt", "r")
+		play_times= f.readlines()
+		f.close()
+
+		f=open("files/times_stop_video.txt", "r")
+		stop_times= f.readlines()
+		f.close()
+
+		f=open("files/times_pauses_video.txt", "r")
+		pause_times= f.readlines()
+		f.close()
 		
+
+		f=open("files/accumulated_viewed_time_video.txt", "r")
+		accumulated_time= f.readlines()
+		f.close()
+
+		f=open("files/average_viewed_time_video.txt", "r")
+		average_time= f.readlines()
+		f.close()
+
+		f=open("files/duration_yt_video.txt", "r")
+		duration= f.readlines()
+		f.close()
+
+		
+
 		fileData = open("files/AllVariablesVideo.txt", "a")
 
-		fileData.write("Name,SeekForTimes,SeekBackTimes,SkippedTimeAv,SkippedTimeAc,ReplayedTimeAv,ReplayedTimeAc,SpeedUpAv,SpeedDownAv\n")
+		fileData.write("Name,Duration,SeekForTimes,SeekBackTimes,SkippedTimeAv,SkippedTimeAc,ReplayedTimeAv,ReplayedTimeAc,SpeedUpAv,SpeedDownAv,Plays,Stops,Pauses,AccumulatedTime,AverageTime\n")
 
 		for i in range(len(seek_for)):
 			name_video, seek_for_data = self.split_first_data(seek_for[i])
+			duration_data=self.split_data(duration[i])
 			seek_back_data = self.split_data(seek_back[i])
 			skipped_average_data = self.split_data(skipped_average[i])
 			skipped_accumulated_data = self.split_data(skipped_accumulated[i])
@@ -133,38 +160,84 @@ class WriteData:
 			replayed_accumulated_data = self.split_data(replayed_accumulated[i])
 			speedUp_data = self.split_data(speedUp[i])
 			speedDown_data = self.split_data(speedDown[i])
-			line=name_video+","+seek_for_data+","+seek_back_data+","+skipped_average_data+","+skipped_accumulated_data+","+replayed_average_data+","+replayed_accumulated_data+","+speedUp_data+","+speedDown_data+"\n"
+			play_data = self.split_data(play_times[i])
+			stop_data = self.split_data(stop_times[i])
+			pause_data = self.split_data(pause_times[i])
+			accumulated_time_data = self.split_data(accumulated_time[i])
+			average_time_data = self.split_data(average_time[i])
+
+
+
+			line=name_video+","+duration_data+","+seek_for_data+","+seek_back_data+","+skipped_average_data+","+skipped_accumulated_data+","+replayed_average_data+","+replayed_accumulated_data+","+speedUp_data+","+speedDown_data+","+play_data+","+stop_data+","+pause_data+","+accumulated_time_data+","+average_time_data+"\n"
 			fileData.write(line)
 
 		fileData.close()
 		return
 
 	def join_all_stud_data(self):
-		f=open("files/AllVariablesStud.txt", "r")
+		f=open("files/all_variables_out.txt", "r")
 		studData= f.readlines()
 		f.close()
+		print len(studData)
 
-		f=open("files/time_viewed_videos_stud2.txt", "r")
-		studTimeVideo = f.readlines()
+		f=open("files/times_stop_videos_stud.txt", "r")
+		stopsData = f.readlines()
 		f.close
+		print len(stopsData)
+
+		f=open("files/times_play_videos_stud.txt", "r")
+		playsData = f.readlines()
+		f.close
+		print len(playsData)
+
+		f=open("files/times_pause_videos_stud.txt", "r")
+		pausesData = f.readlines()
+		f.close
+		print len(pausesData)
+
+		f=open("files/time_viewed_video_stud.txt", "r")
+		timeData = f.readlines()
+		f.close
+		print len(timeData)
+
+		f=open("files/seek_backward_times_stud.txt", "r")
+		seekBackData = f.readlines()
+		f.close
+		print len(seekBackData)
+
+		f=open("files/seek_forward_times_stud.txt", "r")
+		seekFordwardsData = f.readlines()
+		f.close
+		print len(seekFordwardsData)
+
+		f=open("files/quotas_viewed_video_stud.txt", "r")
+		quotasData = f.readlines()
+		f.close
+		print len(quotasData)
 
 		f=open("files/AllVariablesStudent.txt", "a")
 
+		
 		for i in range(len(studData)):
 			line=""
 			data_stud=studData[i].split("\n")
-			data_time_video=studTimeVideo[i].split("\n")
+			data_stops=stopsData[i].split("\n")
+			data_plays=playsData[i].split("\n")
+			data_pauses=pausesData[i].split("\n")
+			data_seekBackward=seekBackData[i].split("\n")
+			data_seekFordward=seekFordwardsData[i].split("\n")
+			data_time_viewed=timeData[i].split("\n")
+			data_time_quotas=quotasData[i].split("\n")
 
-			line=data_stud[0]+","+data_time_video[0]+"\n"
+
+
+			line=data_stud[0]+","+data_stops[0]+","+data_plays[0]+","+data_pauses[0]+","+data_seekBackward[0]+","+data_seekFordward[0]+","+data_time_viewed[0]+","+data_time_quotas[0]+"\n"
 
 			f.write(line)
 
 		f.close()
 
-		print len(studData)
-		print len(studTimeVideo)
-
-
-
+				
+		return
 
 
