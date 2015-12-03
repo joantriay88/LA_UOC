@@ -425,7 +425,154 @@ class VideoData:
 		
 		return dict_video_list_accumulated_time, dict_video_list_average_time
 
+	def calculate_list_video_events_without_redundant_data(self, json_file, li_names_stud, li_ids_video):
+		dict_video_list={}
+		dict_video_list_students={}
+		dict_video_time_viwed_student={}
+		dict_video_list_events_students ={}
+		
+		for video in li_ids_video:
+			dict_video_list[str(video)]=0
 
+		for student in li_names_stud:
+			dict_video_list_students[str(student)]=dict_video_list.copy()
+			dict_video_time_viwed_student[str(student)]=dict_video_list.copy()
+			dict_video_list_events_students[str(student)]=dict_video_list.copy()
+
+
+		for student in li_names_stud:
+			for video in li_ids_video:
+				dict_video_list_students[str(student)][str(video)]=[]
+				dict_video_time_viwed_student[str(student)][str(video)]=0
+				dict_video_list_events_students[str(student)][str(video)]=[]
+
+
+		for line in json_file:
+			if line['event_type']== "stop_video":
+				student = str(line["username"])
+				if student in li_names_stud:
+					event= line['event']
+					elements_events=json.loads(event)
+					code_video=str(elements_events['id'])
+					time = str(elements_events['currentTime'])
+					if time != "None":
+						li_stop=["stop",time]
+						dict_video_list_students[student][code_video].append(li_stop)
+
+			if line['event_type']=="play_video":
+				student = str(line["username"])
+				if student in li_names_stud:
+					event= line['event']
+					elements_events=json.loads(event)
+					code_video=str(elements_events['id'])
+					time = str(elements_events['currentTime'])
+					if time != "None":
+						li_play=["play",time]
+						dict_video_list_students[student][code_video].append(li_play)
+
+			if line['event_type']== "pause_video":
+				student = str(line["username"])
+				if student in li_names_stud:
+					event= line['event']
+					elements_events=json.loads(event)
+					code_video=str(elements_events['id'])
+					time = str(elements_events['currentTime'])
+					if time != "None":
+						li_pause=["pause",time]
+						dict_video_list_students[student][code_video].append(li_pause)
+
+			if line['event_type']=="seek_video":
+				student = str(line["username"])
+				if student in li_names_stud:
+					event= line['event']
+					elements_events=json.loads(event)						
+					code_video=str(elements_events['id'])
+					old_time = str(elements_events['old_time'])
+					new_time = str(elements_events['new_time'])
+					if old_time != "None" and new_time != "None":
+						li_seek=["seek",old_time, new_time]
+						dict_video_list_students[student][code_video].append(li_seek)
+
+			if line["event_type"]=="speed_change_video":
+				print line				
+				student = str(line["username"])
+				if student in li_names_stud:
+					event= line['event']
+					elements_events=json.loads(event)						
+					code_video=str(elements_events['id'])
+					old_speed = str(elements_events['old_speed'])
+					new_speed = str(elements_events['new_speed'])
+					li_speed = ["speed", old_speed, new_speed]
+					dict_video_list_students[student][code_video].append(li_speed)
+	
+
+
+		for student in li_names_stud:
+			for video in li_ids_video:
+				li_new=[]
+				i=0
+				if dict_video_list_students[student][video]>0:
+					for line in dict_video_list_students[student][video]:
+						if i < len(dict_video_list_students[student][video])-1 :
+							if cmp(dict_video_list_students[student][video][i], dict_video_list_students[student][video][i+1]) == 0:
+								i=i+1
+							else:
+								dict_video_list_events_students[student][video].append(dict_video_list_students[student][video][i])
+								i=i+1
+						else:
+							dict_video_list_events_students[student][video].append(dict_video_list_students[student][video][i])
+							i=i+1
+		return dict_video_list_events_students
+
+	def calculate_times_every_video_events_without_redundant_data(self ,li_names_stud, li_ids_video,dict_video_list_events_students):
+		dict_stops={}
+		dict_plays={}
+		dict_pauses={}
+
+		dict_seek_for={}
+		dict_seek_back={}
+
+		dict_speed_up={}
+		dict_speed_down={}
+
+		for video in li_ids_video:
+			dict_stops[str(video)]=0
+			dict_plays[str(video)]=0
+			dict_pauses[str(video)]=0
+
+			dict_seek_for[str(video)]=0
+			dict_seek_back[str(video)]=0
+
+			dict_speed_up[str(video)]=0
+			dict_speed_down[str(video)]=0
+
+		for student in li_names_stud:
+			for video in li_ids_video:
+				for line in dict_video_list_events_students[student][video]:
+					if line[0]=="pause":
+						dict_pauses[video]+=1
+
+					if line[0]=="stop":
+						dict_stops[video]+=1
+
+					if line[0]=="play":
+						dict_plays[video]+=1
+
+					if line[0]=="seek":
+						if float(line[1]) > float(line[2]):
+							dict_seek_back[str(video)]+=1
+
+						if float(line[1]) < float(line[2]):
+							dict_seek_for[str(video)]+=1
+
+					if line[0]=="speed":
+						if float(line[1]) >float(line[2]):
+							dict_speed_up[str(video)]+=1
+
+						if float(line[1]) < float(line[2]):
+							dict_speed_down[str(video)]+=1
+
+		return dict_pauses, dict_stops, dict_plays, dict_seek_back, dict_seek_for, dict_speed_up, dict_speed_down
 
     #TEST METHOD REMOVE AT FINAL
 	def calculate_number_video_events(self,li_names_stud):
