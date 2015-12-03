@@ -31,7 +31,7 @@ li_ids_video = videos.calculate_video_ids(json_file)
 fileData.writeName("CodeVideos.txt", li_ids_video)
 print "IDS VIDEOS CALCULATED, TOTAL VIDEOS: "+str(len(li_ids_video))
 
-'''
+
 #*******************************************SYSTEM****************************************************# 
 dict_video_times_plays, dict_video_times_stops, dict_video_times_pauses = videos.calculate_number_plays_stops_pauses(json_file,li_ids_video)
 fileData.writeInFileSampleData(dict_video_times_plays, "times_play_video.txt", li_ids_video)
@@ -128,15 +128,14 @@ readedData.read_modify_pre_jsons(li_names_stud)
 print "JSON FOR EACH STUDENT GENERATED (DATA TEST)"
 videos.calculate_number_video_events(li_names_stud)
 print "NUMBER EVENTS CALCULATED (TEST)"
-'''
+
 
 #*****************************************JOINING FILES******************************************#
 
-#fileData.join_video_data()
-#print "VIDEO DATA JOINED"
-
+fileData.join_video_data()
+print "VIDEO DATA JOINED"
 fileData.join_video_data_no_redundant()
 print "VIDEO DATA NO REDUNDANT JOINED"
-#fileData.join_all_stud_data()
-#print "STUDENT DATA JOINED"
+fileData.join_all_stud_data()
+print "STUDENT DATA JOINED"
 
