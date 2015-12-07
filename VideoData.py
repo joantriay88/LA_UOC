@@ -278,10 +278,16 @@ class VideoData:
 
 		return dict_video_times_plays, dict_video_times_stops, dict_video_times_pauses
 
-	def calculate_duration_videos(self,json_file):
+	def calculate_duration_videos(self,json_file,li_ids_video):
 		li_ids_video_yt=[]
 		li_ids_video_ucatx=[]
-		dict_total_times_video={}
+		dict_total_duration_video={}
+		correlation_ids_video_ucatx_ytube={}
+
+		for video in li_ids_video:
+			correlation_ids_video_ucatx_ytube[str(video)]=""
+			
+
 		for line in json_file:
 			if line['event_type']== "stop_video" or line['event_type']=="play_video" or line['event_type']== "pause_video":
 				event= line['event']
@@ -290,10 +296,11 @@ class VideoData:
 				code_video_ucatx=elements_events['id']
 				if code_video not in li_ids_video_yt:
 					li_ids_video_yt.append(code_video)
+					correlation_ids_video_ucatx_ytube[str(code_video_ucatx)]=str(code_video)
 					li_ids_video_ucatx.append(code_video_ucatx)
 
 		for video in li_ids_video_ucatx:
-			dict_total_times_video[str(video)]=0
+			dict_total_duration_video[str(video)]=0
 		
 		for video in li_ids_video_yt:
 			video_id=str(video)
@@ -306,9 +313,9 @@ class VideoData:
 				contentDetails=all_data[0]['contentDetails']
 				dur=isodate.parse_duration(contentDetails['duration'])
 				index=li_ids_video_yt.index(str(video))
-				dict_total_times_video[str(li_ids_video_ucatx[index])]=dur.total_seconds()
+				dict_total_duration_video[str(li_ids_video_ucatx[index])]=dur.total_seconds()
 
-		return dict_total_times_video
+		return dict_total_duration_video, correlation_ids_video_ucatx_ytube
 
 	
 	def calculate_time_video_watched_student(self, json_file, li_names_stud, li_ids_video):
@@ -494,7 +501,6 @@ class VideoData:
 						dict_video_list_students[student][code_video].append(li_seek)
 
 			if line["event_type"]=="speed_change_video":
-				print line				
 				student = str(line["username"])
 				if student in li_names_stud:
 					event= line['event']
@@ -509,7 +515,6 @@ class VideoData:
 
 		for student in li_names_stud:
 			for video in li_ids_video:
-				li_new=[]
 				i=0
 				if dict_video_list_students[student][video]>0:
 					for line in dict_video_list_students[student][video]:
