@@ -6,6 +6,7 @@
 #Ignore heat maps files
 *.tsv
 *.html
+!heatmaps
 
 #Exclude ignore this file, base of heatmaps.
 !base.html
