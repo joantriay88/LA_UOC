@@ -4,6 +4,7 @@ from StudentData import *
 from WriteData import *
 from GradeData import *
 from ReadData import *
+from HeatMap import *
 
 import sys
 import json
@@ -14,6 +15,7 @@ students = StudentData()
 fileData = WriteData()
 grades = GradeData()
 readedData = ReadData()
+heatMap = HeatMap()
 
 
 #************UPLOAD JSON FILE****************************#
@@ -31,7 +33,7 @@ li_ids_video = videos.calculate_video_ids(json_file)
 fileData.writeName("CodeVideos.txt", li_ids_video)
 print "IDS VIDEOS CALCULATED, TOTAL VIDEOS: "+str(len(li_ids_video))
 
-
+'''
 #*******************************************SYSTEM****************************************************# 
 dict_video_times_plays, dict_video_times_stops, dict_video_times_pauses = videos.calculate_number_plays_stops_pauses(json_file,li_ids_video)
 fileData.writeInFileSampleData(dict_video_times_plays, "times_play_video.txt", li_ids_video)
@@ -91,11 +93,11 @@ dict_grades_students_modules, modules = grades.calculate_grades(json_file, li_na
 fileData.writeGradesData(dict_grades_students_modules, modules, li_names_stud, 3)
 fileData.writeGradesDataMax(dict_grades_students_modules, modules, li_names_stud)
 print "GRADES ATTEMPT FOR MODULE AND MAX GRADE FOR MODULE CALCULATED"
-
-dict_total_times_video=videos.calculate_duration_videos(json_file)
-fileData.writeInFileSampleData(dict_total_times_video, "duration_yt_video.txt", li_ids_video)
+'''
+dict_total_duration_video, correlation_ids_video_ucatx_ytube=videos.calculate_duration_videos(json_file,li_ids_video)
+#fileData.writeInFileSampleData(dict_total_duration_video, "duration_yt_video.txt", li_ids_video)
 print "ALL TIMES FOR EVERY VIDEO CALCULATED WITH YOUTUBE API V3"
-
+'''
 
 dict_video_time_viwed_student=videos.calculate_time_video_watched_student(json_file, li_names_stud, li_ids_video)
 fileData.writeInFile(dict_video_time_viwed_student,"time_viewed_video_stud.txt", li_names_stud,li_ids_video)
@@ -113,6 +115,7 @@ print "ACCUMULATED AND AVERAGE TIME VIEWED VIDEO CALCULATED "
 
 dict_video_list_events_students=videos.calculate_list_video_events_without_redundant_data(json_file, li_names_stud, li_ids_video)
 dict_pauses, dict_stops, dict_plays, dict_seek_back, dict_seek_for, dict_speed_up, dict_speed_down = videos.calculate_times_every_video_events_without_redundant_data(li_names_stud, li_ids_video, dict_video_list_events_students)
+
 fileData.writeInFileSampleData(dict_pauses, "nr_times_pauses_video.txt", li_ids_video)
 fileData.writeInFileSampleData(dict_stops, "nr_times_stops_video.txt", li_ids_video)
 fileData.writeInFileSampleData(dict_plays, "nr_times_plays_video.txt", li_ids_video)
@@ -120,9 +123,13 @@ fileData.writeInFileSampleData(dict_seek_back, "nr_times_seek_back_video.txt", l
 fileData.writeInFileSampleData(dict_seek_for, "nr_times_seek_for_video.txt", li_ids_video)
 fileData.writeInFileSampleData(dict_speed_up, "nr_times_speed_up_video.txt", li_ids_video)
 fileData.writeInFileSampleData(dict_speed_down, "nr_times_speed_down_video.txt", li_ids_video)
+'''
 print "NO REDUNDANT DATA CALCULATED"
 
 
+heatMap.calculate_matrix(dict_total_duration_video ,json_file, correlation_ids_video_ucatx_ytube, li_names_stud, li_ids_video)
+#heatMap.create_html("test", intervals)
+'''
 #******************************************TESTING TRACKING LOGS**********************************#
 readedData.read_modify_pre_jsons(li_names_stud)
 print "JSON FOR EACH STUDENT GENERATED (DATA TEST)"
@@ -138,4 +145,4 @@ fileData.join_video_data_no_redundant()
 print "VIDEO DATA NO REDUNDANT JOINED"
 fileData.join_all_stud_data()
 print "STUDENT DATA JOINED"
-
+'''
