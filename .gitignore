@@ -1,4 +1,11 @@
-#Ignoramos todos los datos
+#Ignore all files contaning information about students.
 *.txt
 *.json
-.DS_Store
+#Igonre system files
+*.DS_Store
+#Ignore heat maps files
+*.tsv
+*.html
+
+#Exclude ignore this file, base of heatmaps.
+!base.html
